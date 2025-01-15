@@ -1,5 +1,6 @@
 package com.microservices.accounts.repository;
 
+import com.microservices.accounts.dto.CustomerDto;
 import com.microservices.accounts.entity.AccountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

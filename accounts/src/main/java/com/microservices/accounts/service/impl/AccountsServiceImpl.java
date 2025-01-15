@@ -73,4 +73,28 @@ public class AccountsServiceImpl implements IAccountsService {
         return customerDto;
 
     }
+
+    @Override
+    public boolean udpateAccount(CustomerDto customerDto) {
+        boolean isSuccess = false;
+        AccountsDto accountsDto = customerDto.getAccountsDto();
+        if (accountsDto != null) {
+            AccountEntity accountEntity = accountRepository.findById(accountsDto.getAccountNumber()).orElseThrow(
+                    () -> new ResourceNotFoundException("Account", "Account Number", accountsDto.getAccountNumber().toString())
+            );
+            AccountsMapper.mapToAccounts(accountsDto, accountEntity);
+            accountEntity = accountRepository.save(accountEntity);
+
+            Long customerId = accountEntity.getCustomerId();
+            CustomerEntity customerEntity = customerRepository.findById(customerId).orElseThrow(
+                    () -> new ResourceNotFoundException("Customer", "Customer id", customerId.toString())
+            );
+            CustomersMapper.mapToCustomer(customerDto, customerEntity);
+            customerRepository.save(customerEntity);
+            isSuccess = true;
+
+        }
+
+        return isSuccess;
+    }
 }

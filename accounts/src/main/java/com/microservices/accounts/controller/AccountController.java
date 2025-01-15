@@ -38,4 +38,13 @@ public class AccountController {
         return ResponseEntity.ok(customerDto);
 
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateAccount(@RequestBody CustomerDto customerDto) {
+        boolean isUpdated = iAccountsService.udpateAccount(customerDto);
+        if (isUpdated) {
+            return ResponseEntity.ok(new ResponseDto(AccountsConstant.STATUS_201, AccountsConstant.MESSAGE_201));
+        }
+        return ResponseEntity.internalServerError().body(new ResponseDto(AccountsConstant.STATUS_500, AccountsConstant.MESSAGE_500));
+    }
 }
