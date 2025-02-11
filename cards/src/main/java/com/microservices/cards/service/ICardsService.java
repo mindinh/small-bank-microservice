@@ -1,13 +1,14 @@
 package com.microservices.cards.service;
 
+
 import com.microservices.cards.dto.CardsDto;
-import org.springframework.stereotype.Service;
+import com.microservices.cards.entity.CardEntity;
 
-import javax.smartcardio.Card;
+import java.util.Optional;
 
-@Service
 public interface ICardsService {
 
     void createCard(String mobileNo);
+    CardsDto fetchCardDetails(String mobileNo);
 
 }
