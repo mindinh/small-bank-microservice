@@ -10,5 +10,7 @@ public interface ICardsService {
 
     void createCard(String mobileNo);
     CardsDto fetchCardDetails(String mobileNo);
+    boolean updateCard(CardsDto card);
+    boolean deleteCard(String mobileNo);
 
 }

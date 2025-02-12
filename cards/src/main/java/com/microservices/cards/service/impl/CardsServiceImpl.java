@@ -4,6 +4,7 @@ import com.microservices.cards.constants.CardConstants;
 import com.microservices.cards.dto.CardsDto;
 import com.microservices.cards.entity.CardEntity;
 import com.microservices.cards.exception.CardAlreadyExistException;
+import com.microservices.cards.exception.ResourceNotFoundException;
 import com.microservices.cards.mapper.CardsMapper;
 import com.microservices.cards.repository.CardsRepository;
 import com.microservices.cards.service.ICardsService;
@@ -30,7 +31,7 @@ public class CardsServiceImpl implements ICardsService {
         }
 
         CardEntity card = new CardEntity();
-        long randomCardNumber = 1000000000L + new Random().nextInt(900000000);
+        long randomCardNumber = 100000000000L + new Random().nextInt(900000000);
         card.setCardNumber(String.valueOf(randomCardNumber));
         card.setMobileNumber(mobileNo);
         card.setCardType(CardConstants.SAVINGS);
@@ -48,13 +49,29 @@ public class CardsServiceImpl implements ICardsService {
 
     @Override
     public CardsDto fetchCardDetails(String mobileNo) {
-        Optional<CardEntity> cardEntity = cardsRepository.findByMobileNumber(mobileNo);
-        if (!cardEntity.isPresent()) {
-            throw new RuntimeException("Card not found");
-        }
-        else {
-            return CardsMapper.mapToCardsDto(cardEntity.get(), new CardsDto());
-        }
+        CardEntity cards = cardsRepository.findByMobileNumber(mobileNo).orElseThrow(
+                () -> new ResourceNotFoundException("Card", "Mobile Number", mobileNo)
+        );
+        return CardsMapper.mapToCardsDto(cards, new CardsDto());
+    }
 
+    @Override
+    public boolean updateCard(CardsDto cardsDto) {
+        CardEntity cardEntity = cardsRepository.findByCardNumber(cardsDto.getCardNumber()).orElseThrow(
+                () -> new ResourceNotFoundException("Card", "Card Number", cardsDto.getCardNumber())
+        );
+        CardsMapper.mapToCardEntity(cardsDto, cardEntity);
+        cardsRepository.save(cardEntity);
+
+        return true;
+    }
+
+    @Override
+    public boolean deleteCard(String mobileNo) {
+        CardEntity cards = cardsRepository.findByMobileNumber(mobileNo).orElseThrow(
+                () -> new ResourceNotFoundException("Card", "Mobile Number", mobileNo)
+        );
+        cardsRepository.deleteById(cards.getCardId());
+        return true;
     }
 }
