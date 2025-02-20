@@ -39,11 +39,9 @@ public class CardsServiceImpl implements ICardsService {
         card.setAmountUsed(CardConstants.USED);
         card.setAmountAvailable(CardConstants.AVAILABLE);
 
-        card.setCreatedAt(LocalDateTime.now());
-        card.setCreatedBy("test");
 
         CardEntity c = cardsRepository.save(card);
-        System.out.println("Card created: " + card.getCardNumber());
+
 
     }
 
